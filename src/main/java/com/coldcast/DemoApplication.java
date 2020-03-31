@@ -3,7 +3,6 @@ package com.coldcast;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jms.annotation.EnableJms;
 
 @SpringBootApplication //Spring Boot核心注解，用于开启自动配置
 @ComponentScan(basePackages = "com.coldcast.*")
