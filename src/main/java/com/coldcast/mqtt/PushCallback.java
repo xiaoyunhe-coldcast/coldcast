@@ -22,9 +22,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  *  由 MqttClient.connect 激活此回调。   
  */  
 public class PushCallback implements MqttCallback{  
-    public void connectionLost(Throwable cause) {  
+   
+	public void connectionLost(Throwable cause) {  
         // 连接丢失后，一般在这里面进行重连  
-        System.out.println("连接断开，可以做重连");  
+        System.out.println("连接断开，尝试重新 ");  
     }  
 
     public void deliveryComplete(IMqttDeliveryToken token) {  

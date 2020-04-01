@@ -1,27 +1,38 @@
 package com.coldcast.mqtt;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.stereotype.Component;
+
+import com.coldcast.util.logUtil;
+
 /**
- * Created by StoneGeek on 2018/6/5.
+ * Title : 客户端
+ * @{author} Administrator
+ * @{date} 2020年4月1日
+ * @{description} 
  */
+@Component
 public class ClientMQTT {
-    public static final String HOST = "tcp://192.168.1.102:1883";
-    public static final String TOPIC = "mtopic";
+	
+    public static final String HOST = "tcp://localhost:61613";
+    public static final String TOPIC = "mytopic";
     private static final String clientid = "client11";
     private MqttClient client;
     private MqttConnectOptions options;
-    private String userName = "stonegeek";
-    private String passWord = "123456";
+//    private String userName = "admin";
+//    private String passWord = "password";
 
-    private ScheduledExecutorService scheduler;
-
-    private void start() {
+    public void start(String userName, String passWord) {
         try {
             // host为主机名，clientid即连接MQTT的客户端ID，一般以唯一标识符表示，MemoryPersistence设置clientid的保存形式，默认为以内存保存
             client = new MqttClient(HOST, clientid, new MemoryPersistence());
@@ -48,15 +59,30 @@ public class ClientMQTT {
             int[] Qos  = {1};
             String[] topic1 = {TOPIC};
             client.subscribe(topic1, Qos);
-
+            
+//            client.publish(topic, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) throws MqttException {
-        ClientMQTT client = new ClientMQTT();
-        client.start();
+    
+    
+    public void  publishMessage(String message) {
+    	start("admin","password");
+    	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
+    	scheduledExecutorService.scheduleWithFixedDelay(()->{
+            logUtil.info(message);
+            MqttMessage msg = new MqttMessage();
+            msg.setQos(1);
+            msg.setPayload(message.getBytes());
+    		try {
+				client.publish("mytopic", msg);
+			} catch (MqttPersistenceException e) {
+				e.printStackTrace();
+			} catch (MqttException e) {
+				e.printStackTrace();
+			}
+    	},2, 10, TimeUnit.SECONDS);
     }
 }
 

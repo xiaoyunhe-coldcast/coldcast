@@ -8,24 +8,29 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.stereotype.Service;
+
 /**
- * Created by StoneGeek on 2018/6/5.
- *  * 服务器向多个客户端推送主题，即不同客户端可向服务端订阅相同的主题
+ * Title : 服务器向多个客户端推送主题，即不同客户端可向服务端订阅相同的主题
+ * @{author} Administrator
+ * @{date} 2020年4月1日
+ * @{description} 
  */
+@Service
 public class ServerMQTT {
     //tcp://MQTT安装的服务器地址:MQTT定义的端口号
-    public static final String HOST = "tcp://192.168.1.102:1883";
+    public static final String HOST = "tcp://localhost:61613";
     //定义一个主题
-    public static final String TOPIC = "mtopic";
+    public static final String TOPIC = "mytopic";
     //定义MQTT的ID，可以在MQTT服务配置中指定
     private static final String clientid = "server11";
 
     private MqttClient client;
-    private MqttTopic topic11;
-    private String userName = "stonegeek";
-    private String passWord = "123456";
+    public MqttTopic topic11;
+    private String userName = "admin";
+    private String passWord = "password";
 
-    private MqttMessage message;
+    public MqttMessage message;
 
     /**
      * 构造函数
@@ -72,21 +77,5 @@ public class ServerMQTT {
         token.waitForCompletion();
         System.out.println("message is published completely! "
                 + token.isComplete());
-    }
-
-    /**
-     *  启动入口
-     * @param args
-     * @throws MqttException
-     */
-    public static void main(String[] args) throws MqttException {
-        ServerMQTT server = new ServerMQTT();
-
-        server.message = new MqttMessage();
-        server.message.setQos(1);
-        server.message.setRetained(true);
-        server.message.setPayload("hello,topic11".getBytes());
-        server.publish(server.topic11 , server.message);
-        System.out.println(server.message.isRetained() + "------ratained状态");
     }
 }
