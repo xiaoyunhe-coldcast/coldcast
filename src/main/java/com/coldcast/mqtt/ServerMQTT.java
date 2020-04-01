@@ -57,7 +57,6 @@ public class ServerMQTT {
         try {
             client.setCallback(new PushCallback());
             client.connect(options);
-
             topic11 = client.getTopic(TOPIC);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +64,7 @@ public class ServerMQTT {
     }
 
     /**
-     *
+     * 发布消息
      * @param topic
      * @param message
      * @throws MqttPersistenceException
@@ -75,7 +74,6 @@ public class ServerMQTT {
             MqttException {
         MqttDeliveryToken token = topic.publish(message);
         token.waitForCompletion();
-        System.out.println("message is published completely! "
-                + token.isComplete());
+        System.out.println("message is published completely! "+ token.isComplete());
     }
 }

@@ -32,7 +32,7 @@ public class ClientMQTT {
 //    private String userName = "admin";
 //    private String passWord = "password";
 
-    public void start(String userName, String passWord) {
+    public MqttClient start(String userName, String passWord, String topicName) {
         try {
             // host为主机名，clientid即连接MQTT的客户端ID，一般以唯一标识符表示，MemoryPersistence设置clientid的保存形式，默认为以内存保存
             client = new MqttClient(HOST, clientid, new MemoryPersistence());
@@ -50,25 +50,27 @@ public class ClientMQTT {
             options.setKeepAliveInterval(20);
             // 设置回调
             client.setCallback(new PushCallback());
-            MqttTopic topic = client.getTopic(TOPIC);
+            MqttTopic topic = client.getTopic(topicName);
             //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             options.setWill(topic, "close".getBytes(), 2, true);
-
             client.connect(options);
             //订阅消息
             int[] Qos  = {1};
             String[] topic1 = {TOPIC};
             client.subscribe(topic1, Qos);
-            
-//            client.publish(topic, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
+		return client;
     }
     
-    
-    public void  publishMessage(String message) {
-    	start("admin","password");
+    /**
+     *@{author} 发布消息
+     *@{date} 2020年4月1日
+     *@{tags} @param message
+     */
+    public void  publishMessage(String topicName, String message) {
+    	start("admin","password",topicName);
     	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
     	scheduledExecutorService.scheduleWithFixedDelay(()->{
             logUtil.info(message);
@@ -76,7 +78,7 @@ public class ClientMQTT {
             msg.setQos(1);
             msg.setPayload(message.getBytes());
     		try {
-				client.publish("mytopic", msg);
+				client.publish(topicName, msg);
 			} catch (MqttPersistenceException e) {
 				e.printStackTrace();
 			} catch (MqttException e) {
@@ -84,5 +86,16 @@ public class ClientMQTT {
 			}
     	},2, 10, TimeUnit.SECONDS);
     }
+    
+    /**
+     *@{author} 订阅新主题
+     *@{date} 2020年4月1日
+     *@{tags} @return
+     */
+    public String subscribe (String topic) {
+    	MqttClient client = start("admin","password",topic);
+    	return null;
+    }
+    
 }
 
