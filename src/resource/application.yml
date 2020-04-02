@@ -3,6 +3,13 @@ server :
 
 netty : 
    port : 8090
+   
+mqtt : 
+   host : tcp://localhost:61613
+   topic : mytopic
+   clientid : server11
+   userName : admin
+   passWord : password
     
 #spring :
   #thymeleaf :

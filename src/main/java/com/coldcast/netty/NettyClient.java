@@ -6,6 +6,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.stereotype.Component;
+
+import com.coldcast.util.logUtil;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -22,6 +26,7 @@ import lombok.NoArgsConstructor;
  * @{description} 
  */
 @NoArgsConstructor
+@Component
 public class NettyClient {
 
     private EventLoopGroup group = new NioEventLoopGroup();
@@ -30,9 +35,12 @@ public class NettyClient {
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 
     /**
-     * 连接方法
+     *@{author} 连接
+     *@{date} 2020年4月1日
+     *@{tags} @param ip
+     *@{tags} @param port
      */
-    public void connect(String ip,int port) {
+    public Channel connect(String ip,int port) {
         Channel channel = null;
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -49,17 +57,19 @@ public class NettyClient {
             handler(channel);
             // 应用程序会一直等待，直到channel关闭
             channel.closeFuture().sync();
+            return channel;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             group.shutdownGracefully();
         }
+		return channel;
     }
 
     /**
-     * 业务逻辑
-     *
-     * @param channel
+     *@{author} 业务逻辑
+     *@{date} 2020年4月1日
+     *@{tags} @param channel
      */
     private void handler(Channel channel) {
         //如果任务里面执行的时间大于 period 的时间，下一次的任务会推迟执行。
@@ -74,8 +84,31 @@ public class NettyClient {
                 channel.writeAndFlush(msg);
             }
         }, 2, 10, TimeUnit.SECONDS);
-
+    	channel.writeAndFlush("cient开始处理业务");
+    	System.out.println("开始处理业务");
     }
+    
+    
+    /**
+     *@{author} 发送消息
+     *@{date} 2020年4月1日
+     *@{tags} @param channel
+     *@{tags} @param message
+     *@{tags} @return
+     */
+   public String sendMessage(String ip, int port,String message){
+    	try{
+    		logUtil.info(message);
+    		return "消息发送成功";
+    	}catch (Exception e) {
+    		e.printStackTrace();
+			logUtil.error("发送消息失败");
+			return "发送消息失败";
+		}
+    };
+    
+    
+    
 
     /**
      * 主动关闭
@@ -84,13 +117,13 @@ public class NettyClient {
         group.shutdownGracefully();
     }
 
-    /**
-     * 测试入口
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        NettyClient nettyClient = new NettyClient();
-        nettyClient.connect("127.0.0.1",8090);
-    }
+//    /**
+//     * 测试入口
+//     *
+//     * @param args
+//     */
+//    public static void main(String[] args) {
+//        NettyClient nettyClient = new NettyClient();
+//        nettyClient.connect("127.0.0.1",8090);
+//    }
 }

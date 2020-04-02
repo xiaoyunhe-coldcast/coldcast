@@ -34,7 +34,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        logUtil.info("接收到的消息：{}", msg);
+        logUtil.info("接收到客户端的消息：{}", msg);
         StringBuilder sb = null;
         Map<String, Object> result = null;
         try {

@@ -29,8 +29,6 @@ public class ClientMQTT {
     private static final String clientid = "client11";
     private MqttClient client;
     private MqttConnectOptions options;
-//    private String userName = "admin";
-//    private String passWord = "password";
 
     public MqttClient start(String userName, String passWord, String topicName) {
         try {
