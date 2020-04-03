@@ -24,9 +24,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             // 抛弃收到的数据
             ReferenceCountUtil.release(msg);
         }
-        
-//        ctx.write(msg);
-//        ctx.flush();
+       ctx.write(msg);
+       ctx.flush();
     }
     
     /**

@@ -52,7 +52,7 @@ public class NettyServer {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     // 设置TCP长连接,一般如果两个小时内没有数据的通信时,TCP会自动发送一个活动探测数据报文
                     // 建议长连接的时候打开，心跳检测
-                    // .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
 
                     // 构造channel通道工厂//bossGroup的通道，只是负责连接
                     .channel(NioServerSocketChannel.class)

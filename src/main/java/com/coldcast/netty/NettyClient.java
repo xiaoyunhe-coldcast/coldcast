@@ -12,6 +12,7 @@ import com.coldcast.util.logUtil;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -40,10 +41,10 @@ public class NettyClient {
      *@{tags} @param ip
      *@{tags} @param port
      */
-    public Channel connect(String ip,int port) {
+    public Bootstrap connect(String ip,int port) {
         Channel channel = null;
+        Bootstrap bootstrap = new Bootstrap();
         try {
-            Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group).channel(NioSocketChannel.class);
             // 将小的数据包包装成更大的帧进行传送，提高网络的负载,即TCP延迟传输
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
@@ -57,13 +58,13 @@ public class NettyClient {
             handler(channel);
             // 应用程序会一直等待，直到channel关闭
             channel.closeFuture().sync();
-            return channel;
+            return bootstrap;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             group.shutdownGracefully();
         }
-		return channel;
+		return bootstrap;
     }
 
     /**
@@ -98,6 +99,9 @@ public class NettyClient {
      */
    public String sendMessage(String ip, int port,String message){
     	try{
+    		Bootstrap bootstrap = connect(ip, port);
+    		Channel channel = bootstrap.connect(ip, port).sync().channel();
+    		channel.writeAndFlush(message);
     		logUtil.info(message);
     		return "消息发送成功";
     	}catch (Exception e) {

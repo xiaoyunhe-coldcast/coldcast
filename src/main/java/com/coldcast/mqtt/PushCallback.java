@@ -5,7 +5,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;  
 
 /**  
- * Created by StoneGeek on 2018/6/5.  
  * 发布消息的回调类   
  *  
  * 必须实现MqttCallback的接口并实现对应的相关接口方法CallBack 类将实现 MqttCallBack。   
@@ -35,6 +34,7 @@ public class PushCallback implements MqttCallback{
     public void messageArrived(String topic, MqttMessage message) throws Exception {  
         // subscribe后得到的消息会执行到这里面  
         System.out.println("接收消息主题 : " + topic);  
+        System.out.println("接收消息id : " + message.getId()); 
         System.out.println("接收消息Qos : " + message.getQos());  
         System.out.println("接收消息内容 : " + new String(message.getPayload()));  
     }  

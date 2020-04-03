@@ -1,8 +1,6 @@
 package com.coldcast.mqtt;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -25,7 +23,6 @@ import com.coldcast.util.logUtil;
 public class ClientMQTT {
 	
     public static final String HOST = "tcp://localhost:61613";
-    public static final String TOPIC = "mytopic";
     private static final String clientid = "client11";
     private MqttClient client;
     private MqttConnectOptions options;
@@ -54,7 +51,7 @@ public class ClientMQTT {
             client.connect(options);
             //订阅消息
             int[] Qos  = {1};
-            String[] topic1 = {TOPIC};
+            String[] topic1 = {topicName};
             client.subscribe(topic1, Qos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,32 +65,37 @@ public class ClientMQTT {
      *@{tags} @param message
      */
     public void  publishMessage(String topicName, String message) {
-    	start("admin","password",topicName);
-    	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
-    	scheduledExecutorService.scheduleWithFixedDelay(()->{
-            logUtil.info(message);
-            MqttMessage msg = new MqttMessage();
-            msg.setQos(1);
-            msg.setPayload(message.getBytes());
-    		try {
-				client.publish(topicName, msg);
-			} catch (MqttPersistenceException e) {
-				e.printStackTrace();
-			} catch (MqttException e) {
-				e.printStackTrace();
-			}
-    	},2, 10, TimeUnit.SECONDS);
+    	//查询是否有该主题
+    	MqttTopic topic = client.getTopic(topicName);
+    	Optional<MqttTopic> optional = Optional.ofNullable(topic);
+    	if(optional.isPresent()) {
+    		start("admin","password",topicName);
+    	}
+        logUtil.info(message);
+        MqttMessage msg = new MqttMessage();
+        msg.setQos(1);
+        msg.setPayload(message.getBytes());
+        try {
+			client.publish(topicName, msg);
+		} catch (MqttPersistenceException e1) {
+			e1.printStackTrace();
+		} catch (MqttException e1) {
+			e1.printStackTrace();
+		}
+//    	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
+//    	scheduledExecutorService.scheduleWithFixedDelay(()->{
+//    	},2, 10, TimeUnit.SECONDS);
     }
     
-    /**
-     *@{author} 订阅新主题
-     *@{date} 2020年4月1日
-     *@{tags} @return
-     */
-    public String subscribe (String topic) {
-    	MqttClient client = start("admin","password",topic);
-    	return null;
-    }
+//    /**
+//     *@{author} 订阅新主题
+//     *@{date} 2020年4月1日
+//     *@{tags} @return
+//     */
+//    public String subscribe (String topic) {
+//    	MqttClient client = start("admin","password",topic);
+//    	return null;
+//    }
     
 }
 

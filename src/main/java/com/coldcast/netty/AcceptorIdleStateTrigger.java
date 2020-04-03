@@ -30,8 +30,7 @@ public class AcceptorIdleStateTrigger extends ChannelInboundHandlerAdapter {
                 //向服务端送心跳包
                 String heartbeat = "{\"msg\":\"server heart beat\"}\n";
                 //发送心跳消息，并在发送失败时关闭该连接
-                ctx
-                .writeAndFlush(heartbeat)
+                ctx.writeAndFlush(heartbeat)
                 .addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
             }
         } else {

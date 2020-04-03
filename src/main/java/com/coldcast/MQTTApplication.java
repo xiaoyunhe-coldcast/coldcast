@@ -32,8 +32,8 @@ public class MQTTApplication implements CommandLineRunner {
     	 server.message = new MqttMessage();
          server.message.setQos(1);
          server.message.setRetained(true);
-         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
-         scheduledExecutorService.scheduleWithFixedDelay(() ->{
+//         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
+//         scheduledExecutorService.scheduleWithFixedDelay(() ->{
         	 try {
         		 LocalDateTime nowDate = LocalDateTime.now();
                  server.message.setPayload(nowDate.toString().getBytes());
@@ -43,7 +43,7 @@ public class MQTTApplication implements CommandLineRunner {
 			} catch (MqttException e) {
 				e.printStackTrace();
 			}
-         }, 2, 10, TimeUnit.SECONDS);
+//         }, 2, 10, TimeUnit.SECONDS);
          System.out.println(server.message.isRetained() + "------ratained状态");
     }
 }

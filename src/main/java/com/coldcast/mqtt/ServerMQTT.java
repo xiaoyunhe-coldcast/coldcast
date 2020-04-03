@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class ServerMQTT {
     //tcp://MQTT安装的服务器地址:MQTT定义的端口号
     public static final String HOST = "tcp://localhost:61613";
-    //定义一个主题
-    public static final String TOPIC = "mytopic";
     //定义MQTT的ID，可以在MQTT服务配置中指定
     private static final String clientid = "server11";
+    
+    //private
 
     private MqttClient client;
     public MqttTopic topic11;
@@ -39,13 +39,13 @@ public class ServerMQTT {
     public ServerMQTT() throws MqttException {
         // MemoryPersistence设置clientid的保存形式，默认为以内存保存
         client = new MqttClient(HOST, clientid, new MemoryPersistence());
-        connect();
+        connect("test/");
     }
 
     /**
      *  用来连接服务器
      */
-    private void connect() {
+    private void connect(String topic) {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
         options.setUserName(userName);
@@ -57,14 +57,14 @@ public class ServerMQTT {
         try {
             client.setCallback(new PushCallback());
             client.connect(options);
-            topic11 = client.getTopic(TOPIC);
+            topic11 = client.getTopic(topic);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * 发布消息
+     * 发布主题消息
      * @param topic
      * @param message
      * @throws MqttPersistenceException

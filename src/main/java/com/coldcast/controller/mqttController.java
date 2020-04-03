@@ -9,15 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.coldcast.mqtt.ClientMQTT;
 import com.coldcast.mqtt.ServerMQTT;
 
+/**
+ * Title : mqtt服务
+ * @{author} Administrator
+ * @{date} 2020年4月2日
+ * @{description} 
+ */
 @RestController
 public class mqttController {
 	
 	@Autowired
 	ClientMQTT client;
-	
-    @Autowired
-    private ServerMQTT server;
-	
 	
 	/**
 	 *@{author} 连接服务器
@@ -27,8 +29,8 @@ public class mqttController {
 	 *@{tags} @return
 	 */
 	@GetMapping("mqtt/connect")
-	public String getconnet(String name, String password) {
-	    client.start(name,password,"mytopic");
+	public String getconnet(String name, String password,String topic) {
+	    client.start(name,password,topic);
 		LocalDate date = LocalDate.now();
 		return date.toString();
 	}
@@ -42,26 +44,9 @@ public class mqttController {
 	 */
 	@GetMapping("mqtt/clientpublish")
 	public String Clientpublish(String topicName, String message) {
+		client.start("admin","password",topicName);
 		client.publishMessage(topicName,message);
 		LocalDate date = LocalDate.now();
 		return date.toString();
-	}
-	
-	/**
-	 *@{author} 订阅主题
-	 *@{date} 2020年4月1日
-	 *@{tags} @param topic
-	 *@{tags} @return
-	 */
-	@GetMapping("mqtt/subscribe")
-	public String subscribe(String topic) {
-		try {
-			ClientMQTT client = new ClientMQTT();
-			client.start("admin", "password", topic);
-			client.subscribe(topic);
-			return "订阅成功";
-		}catch (Exception e) {
-			return "订阅失败";
-		}
 	}
 }
