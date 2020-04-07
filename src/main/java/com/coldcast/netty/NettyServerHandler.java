@@ -34,17 +34,17 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        logUtil.info("接收到客户端的消息：{}", msg);
+        logUtil.info("接收到客户端的消息:", msg);
         StringBuilder sb = null;
         Map<String, Object> result = null;
         try {
             // 报文解析处理
             sb = new StringBuilder();
             result = JSON.parseObject(msg);
-
             sb.append(result);
             sb.append("解析成功");
             sb.append("\n");
+            //给客户端回消息
             ctx.writeAndFlush(sb);
         } catch (Exception e) {
             String errorCode = "-1\n";
@@ -68,7 +68,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        // 当出现异常就关闭连接
+    	logUtil.error("出现异常，断开连接！");
+    	// 当出现异常就关闭连接
         ctx.close();
         //把客户端的通道关闭
         ctx.channel().close();

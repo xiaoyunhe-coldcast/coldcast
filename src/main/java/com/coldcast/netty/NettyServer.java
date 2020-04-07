@@ -47,19 +47,18 @@ public class NettyServer {
             serverBootstrap.group(bossGroup, workerGroup)
                     //socket参数，当服务器请求处理程全满时，用于临时存放已完成三次握手的请求的队列的最大长度。
                     // 如果未设置或所设置的值小于1，Java将使用默认值50。
-                    //
                     // 服务端可连接队列数,对应TCP/IP协议listen函数中backlog参数
                     .option(ChannelOption.SO_BACKLOG, 128)
                     // 设置TCP长连接,一般如果两个小时内没有数据的通信时,TCP会自动发送一个活动探测数据报文
                     // 建议长连接的时候打开，心跳检测
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
-
                     // 构造channel通道工厂//bossGroup的通道，只是负责连接
                     .channel(NioServerSocketChannel.class)
                     // 设置通道处理者ChannelHandler////workerGroup的处理器
                     .childHandler(nettyServerInitializer);
             // 绑定端口,开始接收进来的连接
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+           
             logUtil.info("netty服务启动: [port:" + port + "]");
             // 等待服务器socket关闭
             // 应用程序会一直等待，直到channel关闭
