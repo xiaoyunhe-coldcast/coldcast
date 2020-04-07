@@ -21,16 +21,20 @@ import io.netty.handler.timeout.IdleStateEvent;
 @ChannelHandler.Sharable
 public class AcceptorIdleStateTrigger extends ChannelInboundHandlerAdapter {
 
+    /**
+     *心跳检测机制
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
-            if (idleStateEvent.state() == IdleState.ALL_IDLE) {
-                logUtil.info("已经5秒未收到客户端的消息了！");
+            if (idleStateEvent.state() == IdleState.READER_IDLE) {
+                logUtil.info("已经20秒未收到客户端的消息了！");
                 //向服务端送心跳包
                 String heartbeat = "{\"msg\":\"server heart beat\"}\n";
                 //发送心跳消息，并在发送失败时关闭该连接
-                ctx.writeAndFlush(heartbeat)
+                ctx
+                .writeAndFlush(heartbeat)
                 .addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
             }
         } else {

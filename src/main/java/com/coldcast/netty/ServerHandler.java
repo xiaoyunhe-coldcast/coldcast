@@ -12,12 +12,15 @@ import io.netty.util.ReferenceCountUtil;
  *
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    /**
+   
+	/**
      * 收到数据时调用
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
+        	ctx.write("收到消息"+msg);
+        	System.out.println("收到消息"+msg);
             ByteBuf in = (ByteBuf)msg;
             System.out.print(in.toString(CharsetUtil.UTF_8));
         } finally {

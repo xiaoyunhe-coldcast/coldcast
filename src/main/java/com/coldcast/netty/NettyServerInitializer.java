@@ -28,6 +28,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Autowired
     private AcceptorIdleStateTrigger idleStateTrigger;
+   
     /**
      * 初始化channel
      */
@@ -44,7 +45,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // 1）readerIdleTime：为读超时时间（即多长时间没有接受到客户端发送数据）
         // 2）writerIdleTime：为写超时时间（即多长时间没有向客户端发送数据）
         // 3）allIdleTime：所有类型的超时时间
-        pipeline.addLast(new IdleStateHandler(5,0,0, TimeUnit.SECONDS));
+        pipeline.addLast(new IdleStateHandler(20,0,0, TimeUnit.SECONDS));
         ch.pipeline().addLast(idleStateTrigger);
 
         pipeline.addLast(nettyServerHandler);
