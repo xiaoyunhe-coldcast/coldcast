@@ -1,12 +1,16 @@
 package com.coldcast.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-
+import com.coldcast.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.coldcast.bean.User;
 
-@Mapper
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author xyh
+ * @since 2020-04-21
+ */
 public interface UserMapper extends BaseMapper<User> {
-	
-	
+
 }
