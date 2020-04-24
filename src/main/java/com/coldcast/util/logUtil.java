@@ -3,8 +3,16 @@ package com.coldcast.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+
+import lombok.val;
+
 
 /**
  * Title : logUtil
@@ -94,13 +102,13 @@ public class logUtil {
 			//实体,打印地址或者值
 			if(i==0) {
 				try {
-					Field[] fields = object.getClass().getDeclaredFields();
-					for(Field f: fields) {
-						//允许读取私有属性
-						f.setAccessible(true);
-						String filedName = f.getType().getName();
-						builder.append("paramType="+filedName+":"+f.get(object)).append(" ");
+					//允许读取私有属性
+					String value = object.toString();
+					//太长的就截取
+					if(value.length() > 500) {
+						value = value.substring(0, 500);
 					}
+					builder.append("paramType="+name+":"+value).append(" ");
 				}catch (Exception e) {
 					e.printStackTrace();
 					builder.append(e.getMessage());	
@@ -137,6 +145,19 @@ public class logUtil {
 		}
 		builder.append("lineNumber="+lineNumber).append(".");
 		return builder.toString();
+	}
+	
+	public static void main(String[] args) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("h", "v");
+		map.put("v", null);
+		List list = new ArrayList<String>();
+		list.add("ss");
+		list.add(null);
+		TreeMap<String, Object> tMap = null;
+		logUtil.info(list);
+		logUtil.info(map);
+		logUtil.info(tMap);
 	}
 
 }
